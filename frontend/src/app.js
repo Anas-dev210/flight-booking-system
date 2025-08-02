@@ -10,7 +10,7 @@ function App() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await axios.post('http://localhost:8080/flights', {
+      await axios.post('http://backend:8080/flights', {
         passengerName: passengerName,
         flightNumber: flightNumber,
         status: status
