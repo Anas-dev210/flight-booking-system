@@ -1,0 +1,48 @@
+# === Global ===
+.DS_Store
+Thumbs.db
+*.log
+*.swp
+*~
+
+# === Node / React ===
+frontend/node_modules/
+frontend/build/
+frontend/.env
+frontend/.next/
+frontend/dist/
+
+# === Java / Spring Boot ===
+**/target/
+**/.classpath
+**/.project
+**/.settings/
+**/.idea/
+**/*.iml
+
+# Maven
+.mvn/
+pom.xml.tag
+pom.xml.releaseBackup
+pom.xml.versionsBackup
+release.properties
+
+# Spring Boot config
+**/application.properties
+**/application.yml
+
+# === Docker ===
+.dockerignore
+
+# === Kubernetes ===
+**/k8s/secrets.yaml
+
+# === Jenkins ===
+jenkins_home/
+jenkins.log
+workspace/
+builds/
+
+# === Environment Files ===
+.env
+.env.*.local
