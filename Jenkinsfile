@@ -7,9 +7,9 @@ pipeline {
   }
 
   stages {
-    stage('Checkout') {
+    stage('Checkout Code') {
       steps {
-        checkout scm
+        git branch: 'dev', url: 'https://github.com/Anas-dev210/flight-booking-system.git'
       }
     }
 
@@ -47,6 +47,9 @@ pipeline {
   post {
     always {
       echo 'Pipeline finished.'
+    }
+    failure {
+      echo 'Pipeline failed.'
     }
   }
 }
