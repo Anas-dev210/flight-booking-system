@@ -21,7 +21,7 @@ public class BookingController {
         return bookingRepository.findAll();
     }
 
-    @PostMapping("/flights")
+    @PostMapping
     public Booking createBooking(@RequestBody Booking booking) {
         return bookingRepository.save(booking);
     }
