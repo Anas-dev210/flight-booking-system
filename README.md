@@ -9,5 +9,5 @@
 
 ## 🚀 Run Everything:
 
-```bash
+```bash---
 docker-compose up --build
