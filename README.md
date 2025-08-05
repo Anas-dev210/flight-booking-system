@@ -7,7 +7,7 @@
 
 ---
 
-## 🚀 Run Everything
+## 🚀 Run Everything:
 
 ```bash
 docker-compose up --build
