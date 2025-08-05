@@ -18,19 +18,20 @@ pipeline {
             echo "🔍 Resolved Maven path: ${mavenHome}"
 
             dir('backend') {
-                sh """
+                    sh '''
                     export JAVA_HOME=${jdkHome}
-                    export PATH=${jdkHome}/bin:${mavenHome}/bin:\$PATH
-
-                    echo 🔎 JAVA_HOME=\$JAVA_HOME
+                    export PATH=${jdkHome}/bin:${mavenHome}/bin:$PATH
+                
+                    echo "🔎 JAVA_HOME=$JAVA_HOME"
                     java -version
                     mvn -version
                     mvn clean package -DskipTests
-                """
+                '''
+
+                        }
+                    }
+                }
             }
-        }
-    }
-}
 
 
         stage('Run Tests') {
