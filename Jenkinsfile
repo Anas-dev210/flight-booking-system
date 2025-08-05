@@ -9,33 +9,29 @@ pipeline {
         }
 
         stage('Build with Maven') {
-            steps {
-                script {
-                    // 🔧 Dynamically fetch tool paths from Jenkins global tool config
-                    def jdkHome = tool name: 'Java 21', type: 'jdk'
-                    def mavenHome = tool name: 'Maven 3.8.7', type: 'maven'
+    steps {
+        script {
+            def jdkHome = tool name: 'Java 21', type: 'jdk'
+            def mavenHome = tool name: 'Maven 3.8.7', type: 'maven'
 
-                    // 🧪 Print to verify what Jenkins resolves
-                    echo "🔍 Resolved JAVA_HOME: ${jdkHome}"
-                    echo "🔍 Resolved Maven path: ${mavenHome}"
+            echo "🔍 Resolved JAVA_HOME: ${jdkHome}"
+            echo "🔍 Resolved Maven path: ${mavenHome}"
 
-                    withEnv([
-                        "JAVA_HOME=${jdkHome}",
-                        "PATH=${jdkHome}/bin:${mavenHome}/bin:${env.PATH}"
-                    ]) {
-                        dir('backend') {
-                            // 🧪 Debug info before build
-                            sh 'echo 🔎 JAVA_HOME=$JAVA_HOME'
-                            sh 'java -version'
-                            sh 'mvn -version'
+            dir('backend') {
+                sh """
+                    export JAVA_HOME=${jdkHome}
+                    export PATH=${jdkHome}/bin:${mavenHome}/bin:\$PATH
 
-                            // 📦 Build your Spring Boot app
-                            sh 'mvn clean package -DskipTests'
-                        }
-                    }
-                }
+                    echo 🔎 JAVA_HOME=\$JAVA_HOME
+                    java -version
+                    mvn -version
+                    mvn clean package -DskipTests
+                """
             }
         }
+    }
+}
+
 
         stage('Run Tests') {
             when {
