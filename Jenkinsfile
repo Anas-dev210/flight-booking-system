@@ -6,11 +6,6 @@ pipeline {
         jdk 'Java 21'
     }
 
-    environment {
-        JAVA_HOME = "${tool 'Java 21'}"
-        PATH = "${JAVA_HOME}/bin:${env.PATH}"
-    }
-
     stages {
         stage('Checkout') {
             steps {
@@ -21,7 +16,12 @@ pipeline {
         stage('Build with Maven') {
             steps {
                 dir('backend') {
-                    sh 'mvn clean package -DskipTests'
+                    script {
+                        def jdkHome = tool name: 'Java 21', type: 'jdk'
+                        withEnv(["JAVA_HOME=${jdkHome}", "PATH=${jdkHome}/bin:${env.PATH}"]) {
+                            sh 'mvn clean package -DskipTests'
+                        }
+                    }
                 }
             }
         }
@@ -29,7 +29,12 @@ pipeline {
         stage('Run Tests') {
             steps {
                 dir('backend') {
-                    sh 'mvn test'
+                    script {
+                        def jdkHome = tool name: 'Java 21', type: 'jdk'
+                        withEnv(["JAVA_HOME=${jdkHome}", "PATH=${jdkHome}/bin:${env.PATH}"]) {
+                            sh 'mvn test'
+                        }
+                    }
                 }
             }
         }
