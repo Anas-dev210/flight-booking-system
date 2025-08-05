@@ -8,6 +8,8 @@ pipeline {
 
     environment {
         APP_NAME = 'flight-app-backend'
+        JAVA_HOME = "${tool 'Java 21'}"
+        PATH = "${env.JAVA_HOME}/bin:${env.PATH}"
     }
 
     stages {
