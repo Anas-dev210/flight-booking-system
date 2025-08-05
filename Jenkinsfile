@@ -1,55 +1,53 @@
 pipeline {
-  agent any
+    agent any
 
-  environment {
-    BACKEND_IMAGE = "flight-backend"
-    FRONTEND_IMAGE = "flight-frontend"
-  }
-
-  stages {
-    stage('Checkout Code') {
-      steps {
-        git branch: 'dev', url: 'https://github.com/Anas-dev210/flight-booking-system.git'
-      }
+    tools {
+        maven 'Maven 3.8.1' // Use the Maven version you installed in Jenkins
+        jdk 'Java 11'       // Also configure JDK under Global Tools
     }
 
-    stage('Build Backend') {
-      steps {
-        dir('backend') {
-          sh 'mvn clean package -DskipTests'
+    environment {
+        APP_NAME = 'flight-app-backend'
+    }
+
+    stages {
+        stage('Checkout') {
+            steps {
+                checkout scm
+            }
         }
-      }
-    }
 
-    stage('Build Frontend') {
-      steps {
-        dir('frontend') {
-          sh 'npm install'
-          sh 'npm run build'
+        stage('Build with Maven') {
+            steps {
+                dir('backend') {
+                    sh 'mvn clean package -DskipTests'
+                }
+            }
         }
-      }
+
+        stage('Run Tests') {
+            steps {
+                dir('backend') {
+                    sh 'mvn test'
+                }
+            }
+        }
+
+        stage('Archive Artifact') {
+            steps {
+                dir('backend/target') {
+                    archiveArtifacts artifacts: '*.jar', fingerprint: true
+                }
+            }
+        }
     }
 
-    stage('Docker Build') {
-      steps {
-        sh 'docker build -t ${BACKEND_IMAGE} ./backend'
-        sh 'docker build -t ${FRONTEND_IMAGE} ./frontend'
-      }
+    post {
+        success {
+            echo "✅ Build and test completed successfully."
+        }
+        failure {
+            echo "❌ Pipeline failed. Please check the logs."
+        }
     }
-
-    stage('Docker Compose Up') {
-      steps {
-        sh 'docker-compose up -d --build'
-      }
-    }
-  }
-
-  post {
-    always {
-      echo 'Pipeline finished.'
-    }
-    failure {
-      echo 'Pipeline failed.'
-    }
-  }
 }
