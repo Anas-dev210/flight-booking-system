@@ -2,8 +2,8 @@ pipeline {
     agent any
 
     tools {
-        maven 'Maven 3.8.1' // Use the Maven version you installed in Jenkins
-        jdk 'Java 11'       // Also configure JDK under Global Tools
+        maven 'Maven 3.8.7' // Use the Maven version you installed in Jenkins
+        jdk 'java 21'       // Also configure JDK under Global Tools
     }
 
     environment {
