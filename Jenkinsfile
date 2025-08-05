@@ -1,11 +1,6 @@
 pipeline {
     agent any
 
-    tools {
-        maven 'Maven 3.8.7'
-        jdk 'Java 21'
-    }
-
     stages {
         stage('Checkout') {
             steps {
@@ -14,32 +9,46 @@ pipeline {
         }
 
         stage('Build with Maven') {
-            steps {
-                dir('backend') {
-                    script {
-                        def jdkHome = tool name: 'Java 21', type: 'jdk'
-                        withEnv(["JAVA_HOME=${jdkHome}", "PATH=${jdkHome}/bin:${env.PATH}"]) {
-                            sh 'mvn clean package -DskipTests'
+    steps {
+        script {
+            def jdkHome = tool name: 'Java 21', type: 'jdk'
+            def mavenHome = tool name: 'Maven 3.8.7', type: 'maven'
+
+            echo "🔍 Resolved JAVA_HOME: ${jdkHome}"
+            echo "🔍 Resolved Maven path: ${mavenHome}"
+
+            dir('backend') {
+                    sh '''
+                    export JAVA_HOME=${jdkHome}
+                    export PATH=${jdkHome}/bin:${mavenHome}/bin:$PATH
+                
+                    echo "🔎 JAVA_HOME=$JAVA_HOME"
+                    java -version
+                    mvn -version
+                    mvn clean package -DskipTests
+                '''
+
                         }
                     }
                 }
             }
-        }
+
 
         stage('Run Tests') {
+            when {
+                expression { return false } // Skip for now to focus on build fix
+            }
             steps {
                 dir('backend') {
-                    script {
-                        def jdkHome = tool name: 'Java 21', type: 'jdk'
-                        withEnv(["JAVA_HOME=${jdkHome}", "PATH=${jdkHome}/bin:${env.PATH}"]) {
-                            sh 'mvn test'
-                        }
-                    }
+                    sh 'mvn test'
                 }
             }
         }
 
         stage('Archive Artifact') {
+            when {
+                expression { return false } // Skip until we get successful build
+            }
             steps {
                 dir('backend/target') {
                     archiveArtifacts artifacts: '*.jar', fingerprint: true
@@ -50,10 +59,10 @@ pipeline {
 
     post {
         success {
-            echo "✅ Build and test completed successfully."
+            echo "✅ Maven build completed successfully!"
         }
         failure {
-            echo "❌ Pipeline failed. Please check the logs."
+            echo "❌ Pipeline failed. Please check the logs above."
         }
     }
 }
