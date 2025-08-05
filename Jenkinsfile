@@ -2,14 +2,13 @@ pipeline {
     agent any
 
     tools {
-        maven 'Maven 3.8.7' // Use the Maven version you installed in Jenkins
-        jdk 'Java 21'       // Also configure JDK under Global Tools
+        maven 'Maven 3.8.7'
+        jdk 'Java 21'
     }
 
     environment {
-        APP_NAME = 'flight-app-backend'
         JAVA_HOME = "${tool 'Java 21'}"
-        PATH = "${env.JAVA_HOME}/bin:${env.PATH}"
+        PATH = "${JAVA_HOME}/bin:${env.PATH}"
     }
 
     stages {
